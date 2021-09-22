@@ -84,8 +84,8 @@ constraint fk_estado_solicitud_estado foreign key (id_estado) references estados
 )ENGINE = INNODB;
 
 
-#table roles_solicitudes
-create table roles_solicitudes(
+#table rol_solicitudes
+create table rol_solicitudes(
 id_rol_solicitud int auto_increment primary key,
 nombre varchar(255)
 )ENGINE = INNODB;
@@ -100,7 +100,7 @@ id_rol_solicitud int not null,
 unique key (id_persona, id_solicitud, id_rol_solicitud),
 constraint fk_persona_solicitud_persona foreign key (id_persona) references personas(id_persona),
 constraint fk_persona_solicitud_solicitud foreign key (id_solicitud) references solicitudes(id_solicitud),
-constraint fk_persona_solicitud_rol_solicitud foreign key (id_rol_solicitud) references roles_solicitudes(id_rol_solicitud)
+constraint fk_persona_solicitud_rol_solicitud foreign key (id_rol_solicitud) references rol_solicitudes(id_rol_solicitud)
 )ENGINE = INNODB;
 
 
@@ -129,7 +129,7 @@ insert into puestos(nombre) values ('Rector');
 insert into puestos(nombre) values ('Vicerrector');
 insert into puestos(nombre) values ('Docente');
 
-insert into personas(correo, dni_ruc, nombre, apellidos, id_puesto) values ('gino.francisco@hotmail.com', '73360326', 'Gino', 'Ascencio Gomez', 1);
+insert into personas(correo, dni_ruc, nombre, apellido, id_puesto) values ('gino.francisco@hotmail.com', '73360326', 'Gino', 'Ascencio Gomez', 1);
 
 insert into roles (nombre) values ('ROLE_USER');
 insert into roles (nombre) values ('ROLE_ADMIN');

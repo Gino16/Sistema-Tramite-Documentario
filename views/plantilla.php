@@ -16,17 +16,12 @@
 
   $views = $viewController->getViewsController();
 
-  if (isset($_SESSION['ingresar']) && $_SESSION['ingresar']) {
-    if ($views == 'login' || $views == '404') {
-      require_once './views/contents/' . $views . '.php';
-    } else {
-      include $views;
-    }
+  if ($views == 'login' || $views == '404') {
+    require_once  './views/contents/' . $views . '.php';
   } else {
-    if ($views == 'login' || $views == '404') {
-      require_once './views/contents/' . $views . '.php';
-    }
+    include $views;
   }
+
   include './views/inc/Script.php' ?>
 </body>
 
