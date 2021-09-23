@@ -15,9 +15,11 @@
       </tr>
     </thead>
     <tbody>
-    <tbody>
-
-    </tbody>
+      <?php
+      require_once './controllers/personaController.php';
+      $personaController = new PersonaController();
+      echo $personaController->listPersonas();
+      ?>
     </tbody>
   </table>
 </div>
