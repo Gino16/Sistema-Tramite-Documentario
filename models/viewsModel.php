@@ -3,7 +3,7 @@ class ViewsModel
 {
   protected static function getViewsModel($view)
   {
-    $listaBlanca = ['inicio', 'persona-form', 'persona-list'];
+    $listaBlanca = ['inicio', 'persona-new', 'persona-list', 'usuario-new'];
     if (in_array($view, $listaBlanca)) {
       if (is_file('./views/contents/' . $view . '.php')) {
         $content = './views/contents/' . $view . '.php';
