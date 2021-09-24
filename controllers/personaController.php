@@ -25,7 +25,7 @@ class PersonaController extends PersonaModel
       $result = PersonaModel::savePersonaModel($datos);
 
       if ($result->rowCount() == 1) {
-        header('Location:' . SERVERURL . 'persona-listar/');
+        header('Location:' . SERVERURL . 'persona-list/');
       } else {
         echo var_dump($result->errorInfo());
       }
@@ -47,7 +47,7 @@ class PersonaController extends PersonaModel
         <td>' . $rows['apellido'] . '</td>
         <td>' . $rows['nombre'] . '</td>
         <td>' . $rows['correo'] . '</td>
-        <td>' . (!isset($rows['cod_estudiante'])  || $rows['cod_estudiante'] == "") ? '-' : $rows['cod_estudiante'] . '</td>
+        <td>' . ((!isset($rows['cod_estudiante'])  || $rows['cod_estudiante'] == "") ? '-' : $rows['cod_estudiante']) . '</td>
         <td>' . $rows['puesto_nombre'] . '</td>
         <td>
         <a class="btn btn-success btn-sm" href="#"><i class="fas fa-pen"></i></a>
@@ -56,7 +56,6 @@ class PersonaController extends PersonaModel
       </tr>
       ';
     }
-    //echo var_dump($datos);
     return $tabla;
   }
 
