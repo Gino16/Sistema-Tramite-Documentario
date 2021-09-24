@@ -16,4 +16,10 @@ class PersonaModel extends MainModel
     $sql->execute();
     return $sql;
   }
+
+  protected static function deletePersonaModel($id){
+    $sql = MainModel::connect()->prepare("DELETE FROM personas WHERE persona_id=$id");
+    $sql->execute();
+    return $sql;
+  }
 }
