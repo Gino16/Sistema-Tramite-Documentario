@@ -18,7 +18,7 @@
   $views = $viewController->getViewsController();
 
   if ($views == 'login' || $views == '404') {
-    require_once  './views/contents/' . $views . '.php';
+    require_once  './views/contents/' . $views . '-view.php';
   } else {
     include $views;
   }

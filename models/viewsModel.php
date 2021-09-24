@@ -5,8 +5,8 @@ class ViewsModel
   {
     $listaBlanca = ['inicio', 'persona-new', 'persona-list', 'usuario-new'];
     if (in_array($view, $listaBlanca)) {
-      if (is_file('./views/contents/' . $view . '.php')) {
-        $content = './views/contents/' . $view . '.php';
+      if (is_file('./views/contents/' . $view . '-view.php')) {
+        $content = './views/contents/' . $view . '-view.php';
       } else {
         $content = '404';
       }
