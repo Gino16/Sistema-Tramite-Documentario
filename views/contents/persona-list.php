@@ -12,6 +12,7 @@
         <th>Correo</th>
         <th>Cod. Estudiante</th>
         <th>Puesto</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
