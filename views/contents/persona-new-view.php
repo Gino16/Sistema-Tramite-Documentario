@@ -8,23 +8,23 @@
       <form action="" method="post">
         <div class="mb-3">
           <label class="form-label" for="dni_ruc">DNI/RUC:</label>
-          <input class="form-control" type="text" name="dni_ruc" id="dni_ruc">
+          <input class="form-control" type="text" name="dni_ruc" id="dni_ruc" required>
         </div>
         <div class="mb-3">
           <label class="form-label" for="nombre">Nombres:</label>
-          <input class="form-control" type="text" name="nombre" id="nombre">
+          <input class="form-control" type="text" name="nombre" id="nombre" required>
         </div>
         <div class="mb-3">
           <label class="form-label" for="apellido">Apellido:</label>
-          <input class="form-control" type="text" name="apellido" id="apellido">
+          <input class="form-control" type="text" name="apellido" id="apellido" required>
         </div>
         <div class="mb-3">
           <label class="form-label" for="correo">Correo:</label>
-          <input class="form-control" type="email" name="correo" id="correo">
+          <input class="form-control" type="email" name="correo" id="correo" required>
         </div>
         <div class="mb-3">
           <label class="form-label" for="cod_estudiante">Codigo de Estudiante:</label>
-          <input class="form-control" type="text" name="cod_estudiante" id="cod_estudiante">
+          <input class="form-control" type="text" name="cod_estudiante" id="cod_estudiante" required>
         </div>
         <div class="mb-3">
           <label for="puesto">Puesto:</label>

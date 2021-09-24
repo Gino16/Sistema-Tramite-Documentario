@@ -13,6 +13,11 @@ class PersonaController extends PersonaModel
       $cod_estudiante = (isset($_POST['cod_estudiante']) ? $_POST['cod_estudiante'] : '');
       $id_puesto = $_POST['id_puesto'];
 
+      if ($dni_ruc == "" || $nombre == "" || $apellido == "" || $correo == "" || $cod_estudiante == "" || $id_puesto == "") {
+        echo "<script>alert('Debe llenar todos los campos')</script>";
+        return;
+      }
+
       $datos = [
         "DNI_RUC" => $dni_ruc,
         "NOMBRE" => $nombre,
