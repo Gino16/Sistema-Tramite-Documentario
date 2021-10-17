@@ -16,4 +16,72 @@ class MainModel
     $sql->execute();
     return $sql;
   }
+
+  // Encriptar cadenas de texto
+  public static function encryption($string)
+  {
+    $key = hash('sha256', SECRET_KEY);
+    $indice = substr(hash('sha256', SECRET_ID), 0, 16);
+    $output = openssl_encrypt($string, METHOD, $key, $indice);
+    $output = base64_encode($output);
+    return $output;
+  }
+  // Desencriptar cadenas de texto
+  protected static function decryption($string)
+  {
+    $key = hash('sha256', SECRET_KEY);
+    $indice = substr(hash('sha256', SECRET_ID), 0, 16);
+    $output = openssl_decrypt(base64_decode($string), METHOD, $key, 0, $indice);
+    return $output;
+  }
+
+  // limpiar cadenas de inyeccion sql y scripts
+  protected static function cleanString($string)
+  {
+    $string = trim($string);
+    $string = stripslashes($string);
+    $string = str_ireplace("<script>", "", $string);
+    $string = str_ireplace("</script>", "", $string);
+    $string = str_ireplace("<script src", "", $string);
+    $string = str_ireplace("<script type=", "", $string);
+    $string = str_ireplace("SELECT * FROM", "", $string);
+    $string = str_ireplace("DELETE FROM", "", $string);
+    $string = str_ireplace("INSERT INTO", "", $string);
+    $string = str_ireplace("DROP TABLE", "", $string);
+    $string = str_ireplace("DROP DATABASE", "", $string);
+    $string = str_ireplace("TRUNCATE TABLE", "", $string);
+    $string = str_ireplace("SHOW TABLES", "", $string);
+    $string = str_ireplace("SHOW DATABASES", "", $string);
+    $string = str_ireplace("<?php", "", $string);
+    $string = str_ireplace("?>", "", $string);
+    $string = str_ireplace("--", "", $string);
+    $string = str_ireplace(">", "", $string);
+    $string = str_ireplace("<", "", $string);
+    $string = str_ireplace("[", "", $string);
+    $string = str_ireplace("]", "", $string);
+    $string = str_ireplace("^", "", $string);
+    $string = str_ireplace("==", "", $string);
+    $string = str_ireplace(";", "", $string);
+    $string = str_ireplace("::", "", $string);
+    $string = stripslashes($string);
+    $string = trim($string);
+    return $string;
+  }
+
+  // Verificar datos que cumplan con formato
+  protected static function checkData($filter, $string)
+  {
+    return preg_match("/^" . $filter . "$/", $string);
+  }
+
+  // Verificar si fecha cumple con formato
+  protected static function checkDate($date)
+  {
+    $values = explode('-', $date);
+    if (count($values) == 3 && checkdate($values[1], $values[2], $values[0])) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

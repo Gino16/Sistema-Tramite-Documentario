@@ -1,43 +1,18 @@
 <?php
-require_once './models/personaModel.php';
+
+if ($peticionAjax) {
+  require_once '../models/personaModel.php';
+} else {
+  require_once './models/personaModel.php';
+}
 class PersonaController extends PersonaModel
 {
 
-  public function savePersona()
+  public function registrarPersona()
   {
-    if (isset($_POST['dni_ruc']) && isset($_POST['nombre']) && isset($_POST['correo']) && isset($_POST['id_puesto'])) {
-      $dni_ruc = $_POST['dni_ruc'];
-      $nombre = $_POST['nombre'];
-      $apellido = (isset($_POST['apellido']) ? $_POST['apellido'] : '');
-      $correo = $_POST['correo'];
-      $cod_estudiante = (isset($_POST['cod_estudiante']) ? $_POST['cod_estudiante'] : '');
-      $id_puesto = $_POST['id_puesto'];
-
-      if ($dni_ruc == "" || $nombre == "" || $apellido == "" || $correo == "" || $cod_estudiante == "" || $id_puesto == "") {
-        echo "<script>alert('Debe llenar todos los campos')</script>";
-        return;
-      }
-
-      $datos = [
-        "DNI_RUC" => $dni_ruc,
-        "NOMBRE" => $nombre,
-        "APELLIDO" => $apellido,
-        "CORREO" => $correo,
-        "COD_ESTUDIANTE" => $cod_estudiante,
-        "ID_PUESTO" => $id_puesto
-      ];
-
-      $result = PersonaModel::savePersonaModel($datos);
-
-      if ($result->rowCount() == 1) {
-        header('Location:' . SERVERURL . 'persona-list/');
-      } else {
-        echo var_dump($result->errorInfo());
-      }
-    }
   }
 
-  public function listPersonas()
+  public function listarPersonas()
   {
     $conn = MainModel::connect();
     $datos = $conn->query("SELECT personas.*, puestos.nombre as 'puesto_nombre' FROM personas INNER JOIN puestos ON personas.id_puesto = puestos.id_puesto ORDER BY personas.apellido;");
@@ -64,10 +39,9 @@ class PersonaController extends PersonaModel
     return $tabla;
   }
 
-  public function listPuestos()
+  public function listarPuestos()
   {
-    $conn = MainModel::connect();
-    $sql = $conn->query("SELECT * FROM puestos");
+    $sql = MainModel::connect()->query("SELECT * FROM PUESTOS");
     $datos = $sql->fetchAll();
     $select = '';
     foreach ($datos as $row) {
