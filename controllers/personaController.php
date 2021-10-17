@@ -10,7 +10,7 @@ class PersonaController extends PersonaModel
 
   public function savePersonaController()
   {
-    $dni_ruc = MainModel::cleanString($_POST['dni_ruc_save']);
+    $dniRuc = MainModel::cleanString($_POST['dni_ruc_save']);
     $nombre = MainModel::cleanString($_POST['nombre']);
     $apellido = MainModel::cleanString($_POST['apellido']);
     $correo = MainModel::cleanString($_POST['correo']);
@@ -18,7 +18,7 @@ class PersonaController extends PersonaModel
     $puesto = MainModel::cleanString($_POST['id_puesto']);
 
     // Verificar campos vacios
-    if ($dni_ruc == "" || $nombre == "" || $apellido == "" || $correo == "") {
+    if ($dniRuc == "" || $nombre == "" || $apellido == "" || $correo == "") {
       $alerta = [
         "Alert" => "simple",
         "title" => "Ocurrió un error inesperado",
@@ -30,7 +30,7 @@ class PersonaController extends PersonaModel
     }
 
     // Verificar datos cumplen con formato
-    if (!MainModel::checkData("[0-9]{1,27}", $dni_ruc)) {
+    if (!MainModel::checkData("[0-9]{1,27}", $dniRuc)) {
       $alerta = [
         "Alert" => "simple",
         "title" => "Ocurrió un error inesperado",
@@ -73,6 +73,83 @@ class PersonaController extends PersonaModel
       echo json_encode($alerta);
       exit();
     }
+
+    // Comprobar que dni es único
+    $checkDni = MainModel::executeSimpleQuery("SELECT dni_ruc from PERSONAS where dni_ruc = '$dniRuc'");
+    if ($checkDni->rowCount() > 0) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El DNI digitado ya se encuentra registrado en la base de datos",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    // Comprobar que correo es unico
+    if (filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+      $checkEmail = MainModel::executeSimpleQuery("SELECT correo from PERSONAS WHERE correo = '$correo'");
+      if ($checkEmail->rowCount() > 0) {
+        $alerta = [
+          "Alert" => "simple",
+          "title" => "Ocurrió un error inesperado",
+          "text" => "El CORREO digitado ya se encuentra registrado en la base de datos",
+          "icon" => "error"
+        ];
+        echo json_encode($alerta);
+        exit();
+      }
+    } else {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El CORREO tiene un formato no permitido",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    // Comprobar que se envio puesto correcto
+    if ($puesto < 0) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El PUESTO seleccionado no es válido",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    $datosPersona = [
+      "DNI_RUC" => $dniRuc,
+      "NOMBRE" => $nombre,
+      "APELLIDO" => $apellido,
+      "CORREO" => $correo,
+      "COD_ESTUDIANTE" => $codEstudiante,
+      "ID_PUESTO" => $puesto
+    ];
+
+    $persona = PersonaModel::savePersonaModel($datosPersona);
+
+    if ($persona->rowCount() == 1) {
+      $alerta = [
+        "Alert" => "clean",
+        "title" => "Persona registrada",
+        "text" => "La PERSONA fue registrada en el sistema exitosamente",
+        "icon" => "success"
+      ];
+    } else {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "No se pudo registrar a la persona",
+        "icon" => "error"
+      ];
+    }
+    echo json_encode($alerta);
   }
 
   public function listarPersonas()

@@ -4,7 +4,7 @@ class PersonaModel extends MainModel
 {
   protected static function savePersonaModel($datos)
   {
-    $sql = MainModel::connect()->prepare("INSERT INTO personas(dni_ruc, nombre, apellido, correo, cod_estudiante, id_puesto) VALUES (:DNI_RUC, :NOMBRE, :APELLIDO, :CORREO, :COD_ESTUDIANTE, :ID_PUESTO);");
+    $sql = MainModel::connect()->prepare("INSERT INTO PERSONAS(dni_ruc, nombre, apellido, correo, cod_estudiante, id_puesto) VALUES (:DNI_RUC, :NOMBRE, :APELLIDO, :CORREO, :COD_ESTUDIANTE, :ID_PUESTO);");
 
     $sql->bindParam(':DNI_RUC', $datos['DNI_RUC']);
     $sql->bindParam(':NOMBRE', $datos['NOMBRE']);
@@ -17,7 +17,8 @@ class PersonaModel extends MainModel
     return $sql;
   }
 
-  protected static function deletePersonaModel($id){
+  protected static function deletePersonaModel($id)
+  {
     $sql = MainModel::connect()->prepare("DELETE FROM personas WHERE persona_id=$id");
     $sql->execute();
     return $sql;
