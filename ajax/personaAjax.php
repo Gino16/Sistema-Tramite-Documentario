@@ -9,6 +9,6 @@ if (isset($_POST['dni_ruc_save'])) {
   $personaController = new PersonaController();
 
   if (isset($_POST['dni_ruc_save'])) {
-    $personaController->registrarPersona();
+    $personaController->savePersonaController();
   }
 }

@@ -100,7 +100,7 @@ id_rol_solicitud int not null,
 unique key (id_persona, id_solicitud, id_rol_solicitud),
 constraint fk_persona_solicitud_persona foreign key (id_persona) references PERSONAS(id_persona),
 constraint fk_persona_solicitud_solicitud foreign key (id_solicitud) references SOLICITUDES(id_solicitud),
-constraint fk_persona_solicitud_rol_solicitud foreign key (id_rol_solicitud) references rol_SOLICITUDES(id_rol_solicitud)
+constraint fk_persona_solicitud_rol_solicitud foreign key (id_rol_solicitud) references ROL_SOLICITUDES(id_rol_solicitud)
 )ENGINE = INNODB;
 
 

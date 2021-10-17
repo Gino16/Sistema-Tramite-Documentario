@@ -61,14 +61,14 @@ function alertAjax(alert) {
     Swal.fire({
       title: alert.title,
       text: alert.text,
-      type: alert.type,
+      icon: alert.icon,
       confirmButtonText: 'Aceptar'
     });
   } else if (alert.Alert == 'reload') {
     Swal.fire({
       title: alert.title,
       text: alert.text,
-      type: alert.type,
+      icon: alert.icon,
       confirmButtonText: 'Aceptar'
     }).then((result) => {
       if (result.value) {
@@ -79,7 +79,7 @@ function alertAjax(alert) {
     Swal.fire({
       title: alert.title,
       text: alert.text,
-      type: alert.type,
+      icon: alert.icon,
       confirmButtonText: 'Aceptar'
     }).then((result) => {
       if (result.value) {

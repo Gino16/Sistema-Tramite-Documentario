@@ -8,8 +8,71 @@ if ($peticionAjax) {
 class PersonaController extends PersonaModel
 {
 
-  public function registrarPersona()
+  public function savePersonaController()
   {
+    $dni_ruc = MainModel::cleanString($_POST['dni_ruc_save']);
+    $nombre = MainModel::cleanString($_POST['nombre']);
+    $apellido = MainModel::cleanString($_POST['apellido']);
+    $correo = MainModel::cleanString($_POST['correo']);
+    $codEstudiante = MainModel::cleanString($_POST['cod_estudiante']);
+    $puesto = MainModel::cleanString($_POST['id_puesto']);
+
+    // Verificar campos vacios
+    if ($dni_ruc == "" || $nombre == "" || $apellido == "" || $correo == "") {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "No ha llenado los campos necesarios para registrar a la persona",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    // Verificar datos cumplen con formato
+    if (!MainModel::checkData("[0-9]{1,27}", $dni_ruc)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El DNI o RUC no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    if (!MainModel::checkData("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,40}", $nombre)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El NOMBRE no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    if (!MainModel::checkData("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,40}", $apellido)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El APELLIDO no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    if (!empty($codEstudiante) && !MainModel::checkData("[0-9]{10}", $codEstudiante)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El CODIGO DE ESTUDIANTE no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
   }
 
   public function listarPersonas()

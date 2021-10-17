@@ -1,5 +1,10 @@
 <?php
-require_once './config/SERVER.php';
+if ($peticionAjax) {
+  require_once '../config/SERVER.php';
+} else {
+  require_once './config/SERVER.php';
+}
+
 
 class MainModel
 {
@@ -82,6 +87,49 @@ class MainModel
       return true;
     } else {
       return false;
+    }
+  }
+
+  // Funcion generica para generar paginacion de tablas
+  protected static function tablePages($page, $nPages, $url, $buttons)
+  {
+    $table = '<ul class="justify-content-center pagination">';
+
+    if ($page == 1) {
+      $table .= '<li class="page-item disabled"><a class="page-link"><i class="bi bi-chevron-double-left"></i></a></li>';
+    } else {
+      $table .= '
+      <li class="page-item"><a class="page-link" href="' . $url . '1/"><i class="bi bi-chevron-double-left"></i></a></li>
+      <li class="page-item"><a class="page-link" href="' . $url . ($page - 1) . '/">Anterior</a></li>
+      ';
+    }
+
+    $count = 0;
+
+    for ($i = $page; $i < $nPages; $i++) {
+      if ($count >= $buttons) {
+        break;
+      }
+
+      if ($page == $i) {
+        $table .= '<li class="page-item"><a class="page-link active" href="' . $url . $i . '/">' . $i . '</a></li>';
+      } else {
+        $table .= '<li class="page-item"><a class="page-link" href="' . $url . $i . '/">' . $i . '</a></li>';
+      }
+
+      $count++;
+
+      if ($page == $nPages) {
+        $table .= '<li class="page-item disabled><a class="page-link"><i class="bi bi-chevron-double-right"></i></a></li>';
+      } else {
+        $table .= '
+        <li class="page-item"><a class="page-link" href="' . $url . ($page + 1) . '/">Siguiente</a></li>
+        <li class="page-item"><a class="page-link" href="' . $url . $nPages . '/"><i class="bi bi-chevron-double-right"></i></a></li>"
+        ';
+      }
+
+      $table .= '</ul>';
+      return $table;
     }
   }
 }
