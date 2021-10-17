@@ -12,7 +12,7 @@ id_persona int auto_increment primary key,
 dni_ruc varchar(11) unique key,
 nombre varchar(255),
 apellido varchar(255),
-correo varchar(255),
+correo varchar(255) unique key,
 cod_estudiante char(10),
 id_puesto int not null,
 constraint fk_persona_puesto foreign key (id_puesto) references PUESTOS(id_puesto)
