@@ -1,9 +1,9 @@
-<div class="container align-items-center">
+<div class="container-fluid align-items-center">
   <div class="row justify-content-center">
     <div class="col-6">
+      <a class="btn btn-outline-secondary" href="<?= SERVERURL ?>persona-list/">Regresar</a>
       <div class="text-center mb-3">
         <h2 class="h2">Registro de Personas</h2>
-
       </div>
       <form class="FormularioAjax" action="<?= SERVERURL ?>ajax/personaAjax.php" method="post" data-form="save">
         <div class="mb-3">

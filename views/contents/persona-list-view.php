@@ -17,15 +17,15 @@
               <th>Apellidos y Nombre</th>
               <th>Correo</th>
               <th>Cod. Estudiante</th>
-              <!--                <th>Puesto</th>-->
-              <!--                <th>Acciones</th>-->
+              <th>Puesto</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <?php
             require_once './controllers/personaController.php';
             $personaController = new PersonaController();
-            echo $personaController->paginarPersonasController($pagina[1], 1, '', $pagina[0], "");
+            echo $personaController->paginarPersonasController($pagina[1], 5, '', $pagina[0], "");
             ?>
       </div>
     </div>
