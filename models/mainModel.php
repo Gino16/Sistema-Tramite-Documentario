@@ -25,9 +25,10 @@ class MainModel
   // Encriptar cadenas de texto
   public static function encryption($string)
   {
+    $output = false;
     $key = hash('sha256', SECRET_KEY);
     $indice = substr(hash('sha256', SECRET_ID), 0, 16);
-    $output = openssl_encrypt($string, METHOD, $key, $indice);
+    $output = openssl_encrypt($string, METHOD, $key, 0, $indice);
     $output = base64_encode($output);
     return $output;
   }
@@ -97,10 +98,10 @@ class MainModel
     $table = '<ul class="justify-content-center pagination">';
 
     if ($page == 1) {
-      $table .= '<li class="page-item disabled"><a class="page-link"><i class="bi bi-chevron-double-left"></i></a></li>';
+      $table .= '<li class="page-item disabled"><a class="page-link"><i class="fas fa-angle-double-left"></i></a></li>';
     } else {
       $table .= '
-      <li class="page-item"><a class="page-link" href="' . $url . '1/"><i class="bi bi-chevron-double-left"></i></a></li>
+      <li class="page-item"><a class="page-link" href="' . $url . '1/"><i class="fas fa-angle-double-left"></i></a></li>
       <li class="page-item"><a class="page-link" href="' . $url . ($page - 1) . '/">Anterior</a></li>
       ';
     }
@@ -122,11 +123,11 @@ class MainModel
     }
 
     if ($page == $nPages) {
-      $table .= '<li class="page-item disabled"><a class="page-link"> <i class="bi bi-chevron-double-right"></i></a></li>';
+      $table .= '<li class="page-item disabled"><a class="page-link"> <i class="fas fa-angle-double-right"></i></a></li>';
     } else {
       $table .= '
         <li class="page-item"><a class="page-link" href="' . $url . ($page + 1) . '/">Siguiente</a></li>
-        <li class="page-item"><a class="page-link" href="' . $url . $nPages . '/"><i class="bi bi-chevron-double-right"></i></a></li>
+        <li class="page-item"><a class="page-link" href="' . $url . $nPages . '/"><i class="fas fa-angle-double-right"></i></a></li>
         ';
     }
 

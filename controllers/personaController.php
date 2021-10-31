@@ -196,6 +196,15 @@ class PersonaController extends PersonaModel
               <td > ' . $row['correo'] . ' </td >
               <td > ' . ((isset($row['cod_estudiante']) && $row['cod_estudiante'] != "") ? $row['cod_estudiante'] : " - ") . ' </td >
               <td > ' . $row['nombre_puesto'] . ' </td >
+              <td> 
+              <a href="' . $url . 'persona-update/' . MainModel::encryption($row['id_persona']) . '" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></a>
+              <form action="FormularioAjax" method="post" class="d-inline" data-form="delete" autocomplete="off">
+                <input type="hidden" name="id_persona_del" value="' . MainModel::encryption($row['id_persona']) . '">
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+              </form>
+              </td>
             </tr >
 				';
       }
@@ -225,6 +234,25 @@ class PersonaController extends PersonaModel
       $table .= MainModel::tablePages($page, $nPages, $url, 10);
     }
     return $table;
+  }
+
+  public function eliminarClienteController()
+  {
+    $id = MainModel::decryption($_POST['id_persona_del']);
+    $id = MainModel::cleanString($id);
+
+    //Check Persona in DB
+    $checkCliente = MainModel::executeSimpleQuery("SELECT persona_id FROM PERSONAS WHERE persona_id = '$id'");
+    if ($checkCliente->rowCount() <= 0) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "No se pudo eliminar a la persona",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
   }
 
   public function listarPuestos()
