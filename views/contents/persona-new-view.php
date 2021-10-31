@@ -1,7 +1,7 @@
 <div class="container-fluid align-items-center">
   <div class="row justify-content-center">
     <div class="col-6">
-      <a class="btn btn-outline-secondary" href="<?= SERVERURL ?>persona-list/">Regresar</a>
+      <a class="btn btn-outline-secondary" href="<?= SERVERURL ?>persona-list/">&laquo; Regresar</a>
       <div class="text-center mb-3">
         <h2 class="h2">Registro de Personas</h2>
       </div>
@@ -32,7 +32,13 @@
             <?php
             require_once './controllers/personaController.php';
             $personaController = new PersonaController();
-            echo $personaController->listarPuestos();
+            $puestos = $personaController->listarPuestos();
+
+            foreach ($puestos as $puesto) {
+              echo '
+              <option value="' . $puesto['puesto_id'] . '">' . $puesto['nombre'] . '</option>
+              ';
+            }
             ?>
           </select>
         </div>

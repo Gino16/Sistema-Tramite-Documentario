@@ -10,7 +10,7 @@
     ?>
 
       <div class="col-6">
-        <a class="btn btn-outline-secondary mb-4" href="<?= SERVERURL ?>persona-list/">Regresar</a>
+        <a class="btn btn-outline-secondary mb-4" href="<?= SERVERURL ?>persona-list/">&laquo; Regresar</a>
         <div class="text-center mb-3">
           <h2 class="h2">Actualizar Datos de Persona</h2>
 
@@ -43,7 +43,12 @@
               <?php
               require_once './controllers/personaController.php';
               $personaController = new PersonaController();
-              echo $personaController->listarPuestos();
+              $puestos = $personaController->listarPuestos();
+              foreach ($puestos as $puesto) {
+                echo '
+              <option value="' . $puesto['puesto_id'] . '" ' . (($puesto['puesto_id'] == $campos['puesto_id']) ? 'selected' : '') . '>' . $puesto['nombre'] . '</option>
+              ';
+              }
               ?>
             </select>
           </div>

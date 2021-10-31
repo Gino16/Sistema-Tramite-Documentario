@@ -451,12 +451,13 @@ class PersonaController extends PersonaModel
   {
     $sql = MainModel::connect()->query("SELECT * FROM PUESTOS");
     $datos = $sql->fetchAll();
-    $select = '';
-    foreach ($datos as $row) {
-      $select .= '
-				<option value = "' . $row['puesto_id'] . '">' . $row['nombre'] . ' </option >
-				';
-    }
-    return $select;
+    return $datos;
+  }
+
+  public function listarPersonas()
+  {
+    $sql = MainModel::connect()->query("SELECT * FROM PERSONAS");
+    $datos = $sql->fetchAll();
+    return $datos;
   }
 }
