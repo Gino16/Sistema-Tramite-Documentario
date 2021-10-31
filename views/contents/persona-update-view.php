@@ -41,11 +41,3 @@
     </div>
   </div>
 </div>
-
-<?php
-if (isset($_POST['dni_ruc']) && isset($_POST['nombre']) && isset($_POST['correo']) && isset($_POST['id_puesto'])) {
-  $personaController->savePersona();
-}
-
-
-?>

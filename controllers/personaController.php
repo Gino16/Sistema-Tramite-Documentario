@@ -16,7 +16,7 @@ class PersonaController extends PersonaModel
     $apellido = MainModel::cleanString($_POST['apellido']);
     $correo = MainModel::cleanString($_POST['correo']);
     $codEstudiante = MainModel::cleanString($_POST['cod_estudiante']);
-    $puesto = MainModel::cleanString($_POST['id_puesto']);
+    $puesto = MainModel::cleanString($_POST['puesto_id']);
 
     // Verificar campos vacios
     if ($dniRuc == "" || $nombre == "" || $apellido == "" || $correo == "") {
@@ -130,7 +130,7 @@ class PersonaController extends PersonaModel
       "APELLIDO" => $apellido,
       "CORREO" => $correo,
       "COD_ESTUDIANTE" => $codEstudiante,
-      "ID_PUESTO" => $puesto
+      "PUESTO_ID" => $puesto
     ];
 
     $persona = PersonaModel::savePersonaModel($datosPersona);
@@ -168,9 +168,9 @@ class PersonaController extends PersonaModel
     $start = ($page > 0) ? (($page * $numReg) - $numReg) : 0;
 
     if (isset($search) && $search != "") {
-      $query = "SELECT SQL_CALC_FOUND_ROWS pe.*, pu.nombre as nombre_puesto FROM PERSONAS pe INNER JOIN PUESTOS pu ON pe.id_puesto = pu.id_puesto  WHERE pe.nombre LIKE '%$search%' OR pe.apellido LIKE '%$search%' OR pe.correo LIKE '%$search%' OR pe.cod_estudiante LIKE '%$search%' ORDER BY pe.apellido ASC LIMIT $start, $numReg";
+      $query = "SELECT SQL_CALC_FOUND_ROWS pe.*, pu.nombre as nombre_puesto FROM PERSONAS pe INNER JOIN PUESTOS pu ON pe.puesto_id = pu.puesto_id  WHERE pe.nombre LIKE '%$search%' OR pe.apellido LIKE '%$search%' OR pe.correo LIKE '%$search%' OR pe.cod_estudiante LIKE '%$search%' ORDER BY pe.apellido ASC LIMIT $start, $numReg";
     } else {
-      $query = "SELECT SQL_CALC_FOUND_ROWS pe.*, pu.nombre as nombre_puesto FROM PERSONAS pe INNER JOIN PUESTOS pu ON pe.id_puesto = pu.id_puesto ORDER BY apellido ASC LIMIT $start, $numReg";
+      $query = "SELECT SQL_CALC_FOUND_ROWS pe.*, pu.nombre as nombre_puesto FROM PERSONAS pe INNER JOIN PUESTOS pu ON pe.puesto_id = pu.puesto_id ORDER BY apellido ASC LIMIT $start, $numReg";
     }
 
     $conn = MainModel::connect();
@@ -197,9 +197,9 @@ class PersonaController extends PersonaModel
               <td > ' . ((isset($row['cod_estudiante']) && $row['cod_estudiante'] != "") ? $row['cod_estudiante'] : " - ") . ' </td >
               <td > ' . $row['nombre_puesto'] . ' </td >
               <td> 
-                <a href="' . SERVERURL . 'persona-update/' . MainModel::encryption($row['id_persona']) . '" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></a>
+                <a href="' . SERVERURL . 'persona-update/' . MainModel::encryption($row['persona_id']) . '" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></a>
                 <form action="' . SERVERURL . 'ajax/personaAjax.php" method="post" class="d-inline FormularioAjax" data-form="delete" autocomplete="off">
-                  <input type="hidden" name="id_persona_del" value="' . MainModel::encryption($row['id_persona']) . '">
+                  <input type="hidden" name="persona_id_del" value="' . MainModel::encryption($row['persona_id']) . '">
                     <button type="submit" class="btn btn-danger btn-sm">
                       <i class="fas fa-trash-alt"></i>
                     </button>
@@ -213,7 +213,7 @@ class PersonaController extends PersonaModel
       if ($total >= 1) {
         $table .= '
         <tr class="text-center" >
-            <td colspan = "9" >
+            <td i = "9" >
                 <a class="btn btn-primary btn-sm" href = "' . $url . '" > Haga click aquí para recargar la lista </a >
             </td >
         </tr >
@@ -236,13 +236,13 @@ class PersonaController extends PersonaModel
     return $table;
   }
 
-  public function eliminarClienteController()
+  public function deleteClienteController()
   {
-    $id = MainModel::decryption($_POST['id_persona_del']);
+    $id = MainModel::decryption($_POST['persona_id_del']);
     $id = MainModel::cleanString($id);
 
     //Check Persona in DB
-    $checkCliente = MainModel::executeSimpleQuery("SELECT id_persona FROM PERSONAS WHERE id_persona = '$id'");
+    $checkCliente = MainModel::executeSimpleQuery("SELECT persona_id FROM PERSONAS WHERE persona_id = '$id'");
     if ($checkCliente->rowCount() <= 0) {
       $alerta = [
         "Alert" => "simple",
@@ -280,7 +280,7 @@ class PersonaController extends PersonaModel
     $select = '';
     foreach ($datos as $row) {
       $select .= '
-				<option value = "' . $row['id_puesto'] . '">' . $row['nombre'] . ' </option >
+				<option value = "' . $row['puesto_id'] . '">' . $row['nombre'] . ' </option >
 				';
     }
     return $select;

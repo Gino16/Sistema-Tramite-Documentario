@@ -4,14 +4,14 @@ class PersonaModel extends MainModel
 {
   protected static function savePersonaModel($datos)
   {
-    $sql = MainModel::connect()->prepare("INSERT INTO PERSONAS(dni_ruc, nombre, apellido, correo, cod_estudiante, id_puesto) VALUES (:DNI_RUC, :NOMBRE, :APELLIDO, :CORREO, :COD_ESTUDIANTE, :ID_PUESTO);");
+    $sql = MainModel::connect()->prepare("INSERT INTO PERSONAS(dni_ruc, nombre, apellido, correo, cod_estudiante, puesto_id) VALUES (:DNI_RUC, :NOMBRE, :APELLIDO, :CORREO, :COD_ESTUDIANTE, :PUESTO_ID);");
 
     $sql->bindParam(':DNI_RUC', $datos['DNI_RUC']);
     $sql->bindParam(':NOMBRE', $datos['NOMBRE']);
     $sql->bindParam(':APELLIDO', $datos['APELLIDO']);
     $sql->bindParam(':CORREO', $datos['CORREO']);
     $sql->bindParam(':COD_ESTUDIANTE', $datos['COD_ESTUDIANTE']);
-    $sql->bindParam(':ID_PUESTO', $datos['ID_PUESTO']);
+    $sql->bindParam(':PUESTO_ID', $datos['PUESTO_ID']);
 
     $sql->execute();
     return $sql;
@@ -19,7 +19,14 @@ class PersonaModel extends MainModel
 
   protected static function deletePersonaModel($id)
   {
-    $sql = MainModel::connect()->prepare("DELETE FROM PERSONAS WHERE id_persona=$id");
+    $sql = MainModel::connect()->prepare("DELETE FROM PERSONAS WHERE persona_id=$id");
+    $sql->execute();
+    return $sql;
+  }
+
+  protected static function datosPersonaModel($tipo, $id)
+  {
+    $sql = MainModel::connect()->prepare("SELECT * FROM PERSONAS WHERE persona_id=$id");
     $sql->execute();
     return $sql;
   }

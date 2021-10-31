@@ -28,7 +28,7 @@
         </div>
         <div class="mb-3">
           <label for="puesto">Puesto:</label>
-          <select class="form-select" name="id_puesto">
+          <select class="form-select" name="puesto_id">
             <?php
             require_once './controllers/personaController.php';
             $personaController = new PersonaController();
