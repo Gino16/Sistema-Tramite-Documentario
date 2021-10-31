@@ -380,58 +380,71 @@ class PersonaController extends PersonaModel
     }
 
     // Comprobar que correo es unico
-    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+    if (filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+      if ($correo != $campos['correo']) {
+        $checkCorreo = MainModel::executeSimpleQuery("SELECT correo from PERSONAS where correo = '$correo'");
+        if ($checkCorreo->rowCount() > 0) {
+          $alerta = [
+            "Alert" => "simple",
+            "title" => "Ocurrió un error inesperado",
+            "text" => "El CORREO digitado ya se encuentra registrado en la base de datos",
+            "icon" => "error"
+          ];
+          echo json_encode($alerta);
+          exit();
+        }
+      } else {
+        $alerta = [
+          "Alert" => "simple",
+          "title" => "Ocurrió un error inesperado",
+          "text" => "El CORREO no tiene un formato no permitido",
+          "icon" => "error"
+        ];
+        echo json_encode($alerta);
+        exit();
+      }
 
-      $alerta = [
-        "Alert" => "simple",
-        "title" => "Ocurrió un error inesperado",
-        "text" => "El CORREO tiene un formato no permitido",
-        "icon" => "error"
+      // Comprobar que se envio puesto correcto
+      if ($puesto < 0) {
+        $alerta = [
+          "Alert" => "simple",
+          "title" => "Ocurrió un error inesperado",
+          "text" => "El PUESTO seleccionado no es válido",
+          "icon" => "error"
+        ];
+        echo json_encode($alerta);
+        exit();
+      }
+
+      $datosPersona = [
+        "DNI_RUC" => $dniRuc,
+        "NOMBRE" => $nombre,
+        "APELLIDO" => $apellido,
+        "CORREO" => $correo,
+        "COD_ESTUDIANTE" => $codEstudiante,
+        "PUESTO_ID" => $puesto,
+        "ID" => $id
       ];
+
+      $updatePersona = PersonaModel::updatePersonaModel($datosPersona);
+
+      if ($updatePersona->rowCount() == 1) {
+        $alerta = [
+          "Alert" => "reload",
+          "title" => "Persona Actualizada",
+          "text" => "La persona ha sido actualizada exitosamente",
+          "icon" => "success"
+        ];
+      } else {
+        $alerta = [
+          "Alert" => "simple",
+          "title" => "Ocurrió un error inesperado",
+          "text" => "No se pudo actualizar a la persona",
+          "icon" => "error"
+        ];
+      }
       echo json_encode($alerta);
-      exit();
     }
-
-    // Comprobar que se envio puesto correcto
-    if ($puesto < 0) {
-      $alerta = [
-        "Alert" => "simple",
-        "title" => "Ocurrió un error inesperado",
-        "text" => "El PUESTO seleccionado no es válido",
-        "icon" => "error"
-      ];
-      echo json_encode($alerta);
-      exit();
-    }
-
-    $datosPersona = [
-      "DNI_RUC" => $dniRuc,
-      "NOMBRE" => $nombre,
-      "APELLIDO" => $apellido,
-      "CORREO" => $correo,
-      "COD_ESTUDIANTE" => $codEstudiante,
-      "PUESTO_ID" => $puesto,
-      "ID" => $id
-    ];
-
-    $updatePersona = PersonaModel::updatePersonaModel($datosPersona);
-
-    if ($updatePersona->rowCount() == 1) {
-      $alerta = [
-        "Alert" => "reload",
-        "title" => "Persona Actualizada",
-        "text" => "La persona ha sido actualizada exitosamente",
-        "icon" => "success"
-      ];
-    } else {
-      $alerta = [
-        "Alert" => "simple",
-        "title" => "Ocurrió un error inesperado",
-        "text" => "No se pudo actualizar a la persona",
-        "icon" => "error"
-      ];
-    }
-    echo json_encode($alerta);
   }
 
   public function listarPuestos()
