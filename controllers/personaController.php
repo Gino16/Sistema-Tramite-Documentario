@@ -236,14 +236,14 @@ class PersonaController extends PersonaModel
     return $table;
   }
 
-  public function deleteClienteController()
+  public function deletePersonaController()
   {
     $id = MainModel::decryption($_POST['persona_id_del']);
     $id = MainModel::cleanString($id);
 
     //Check Persona in DB
-    $checkCliente = MainModel::executeSimpleQuery("SELECT persona_id FROM PERSONAS WHERE persona_id = '$id'");
-    if ($checkCliente->rowCount() <= 0) {
+    $checkPersona = MainModel::executeSimpleQuery("SELECT persona_id FROM PERSONAS WHERE persona_id = '$id'");
+    if ($checkPersona->rowCount() <= 0) {
       $alerta = [
         "Alert" => "simple",
         "title" => "Ocurrió un error inesperado",
@@ -267,6 +267,167 @@ class PersonaController extends PersonaModel
         "Alert" => "simple",
         "title" => "Ocurrió un error inesperado",
         "text" => "No se pudo eliminar a la persona",
+        "icon" => "error"
+      ];
+    }
+    echo json_encode($alerta);
+  }
+
+  public function datosPersonaController($tipo, $id)
+  {
+    $tipo = MainModel::cleanString($tipo);
+    $id = MainModel::decryption($id);
+    $id = MainModel::cleanString($id);
+
+    return PersonaModel::datosPersonaModel($tipo, $id);
+  }
+
+  public function updatePersonaController()
+  {
+    $id = MainModel::decryption($_POST['persona_id_up']);
+    $id = MainModel::cleanString($id);
+
+    $checkPersona = MainModel::executeSimpleQuery("SELECT * FROM PERSONAS WHERE persona_id = '$id'");
+    if ($checkPersona->rowCount() <= 0) {
+      $alerta = [
+        "Alerta" => "simple",
+        "Titulo" => "Ocurrió un error inesperado",
+        "Texto" => "La persona ha editar no existe en el sistema",
+        "Tipo" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    } else {
+      $campos = $checkPersona->fetch();
+    }
+    $dniRuc = MainModel::cleanString($_POST['dni_ruc_up']);
+    $nombre = MainModel::cleanString($_POST['nombre_up']);
+    $apellido = MainModel::cleanString($_POST['apellido_up']);
+    $correo = MainModel::cleanString($_POST['correo_up']);
+    $codEstudiante = MainModel::cleanString($_POST['cod_estudiante_up']);
+    $puesto = MainModel::cleanString($_POST['puesto_id_up']);
+
+    // Verificar campos vacios
+    if ($dniRuc == "" || $nombre == "" || $apellido == "" || $correo == "") {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "No ha llenado los campos necesarios para registrar a la persona",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    // Verificar datos cumplen con formato
+    if (!MainModel::checkData("[0-9]{1,27}", $dniRuc)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El DNI o RUC no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    if (!MainModel::checkData("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,40}", $nombre)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El NOMBRE no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    if (!MainModel::checkData("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{1,40}", $apellido)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El APELLIDO no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    if (!empty($codEstudiante) && !MainModel::checkData("[0-9]{10}", $codEstudiante)) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El CODIGO DE ESTUDIANTE no cumple con el formato solicitado",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    // Comprobar que dni es único
+    if ($dniRuc != $campos['dni_ruc']) {
+      $checkDni = MainModel::executeSimpleQuery("SELECT dni_ruc from PERSONAS where dni_ruc = '$dniRuc'");
+      if ($checkDni->rowCount() > 0) {
+        $alerta = [
+          "Alert" => "simple",
+          "title" => "Ocurrió un error inesperado",
+          "text" => "El DNI digitado ya se encuentra registrado en la base de datos",
+          "icon" => "error"
+        ];
+        echo json_encode($alerta);
+        exit();
+      }
+    }
+
+    // Comprobar que correo es unico
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El CORREO tiene un formato no permitido",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    // Comprobar que se envio puesto correcto
+    if ($puesto < 0) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El PUESTO seleccionado no es válido",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
+
+    $datosPersona = [
+      "DNI_RUC" => $dniRuc,
+      "NOMBRE" => $nombre,
+      "APELLIDO" => $apellido,
+      "CORREO" => $correo,
+      "COD_ESTUDIANTE" => $codEstudiante,
+      "PUESTO_ID" => $puesto,
+      "ID" => $id
+    ];
+
+    $updatePersona = PersonaModel::updatePersonaModel($datosPersona);
+
+    if ($updatePersona->rowCount() == 1) {
+      $alerta = [
+        "Alert" => "reload",
+        "title" => "Persona Actualizada",
+        "text" => "La persona ha sido actualizada exitosamente",
+        "icon" => "success"
+      ];
+    } else {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "No se pudo actualizar a la persona",
         "icon" => "error"
       ];
     }

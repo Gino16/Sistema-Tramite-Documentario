@@ -21,9 +21,9 @@ function enviarFormularioAjax(e) {
 
   if (tipo == 'save') {
     alertText = 'Los datos serán guardados';
-  } else if (alertText == 'update') {
+  } else if (tipo == 'update') {
     alertText = 'Los datos serán modificados';
-  } else if (alertText == 'search') {
+  } else if (tipo == 'search') {
     alertText = 'Se eliminará el término de busqueda';
   }
   else if (tipo == 'delete') {
