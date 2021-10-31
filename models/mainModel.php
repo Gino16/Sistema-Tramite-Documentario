@@ -36,6 +36,7 @@ class MainModel
   // Desencriptar cadenas de texto
   protected static function decryption($string)
   {
+    $output = false;
     $key = hash('sha256', SECRET_KEY);
     $indice = substr(hash('sha256', SECRET_ID), 0, 16);
     $output = openssl_decrypt(base64_decode($string), METHOD, $key, 0, $indice);

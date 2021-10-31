@@ -32,7 +32,7 @@
             <?php
             require_once './controllers/personaController.php';
             $personaController = new PersonaController();
-            echo $personaController->listPuestos();
+            echo $personaController->listarPuestos();
             ?>
           </select>
         </div>

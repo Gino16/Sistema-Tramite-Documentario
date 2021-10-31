@@ -13,6 +13,6 @@ if (isset($_POST['dni_ruc_save']) || isset($_POST['id_persona_del'])) {
   }
 
   if (isset($_POST['id_persona_del'])) {
-    # code...
+    $personaController->eliminarClienteController();
   }
 }

@@ -197,13 +197,13 @@ class PersonaController extends PersonaModel
               <td > ' . ((isset($row['cod_estudiante']) && $row['cod_estudiante'] != "") ? $row['cod_estudiante'] : " - ") . ' </td >
               <td > ' . $row['nombre_puesto'] . ' </td >
               <td> 
-              <a href="' . $url . 'persona-update/' . MainModel::encryption($row['id_persona']) . '" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></a>
-              <form action="FormularioAjax" method="post" class="d-inline" data-form="delete" autocomplete="off">
-                <input type="hidden" name="id_persona_del" value="' . MainModel::encryption($row['id_persona']) . '">
-                  <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-              </form>
+                <a href="' . SERVERURL . 'persona-update/' . MainModel::encryption($row['id_persona']) . '" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></a>
+                <form action="' . SERVERURL . 'ajax/personaAjax.php" method="post" class="d-inline FormularioAjax" data-form="delete" autocomplete="off">
+                  <input type="hidden" name="id_persona_del" value="' . MainModel::encryption($row['id_persona']) . '">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
               </td>
             </tr >
 				';
@@ -242,7 +242,7 @@ class PersonaController extends PersonaModel
     $id = MainModel::cleanString($id);
 
     //Check Persona in DB
-    $checkCliente = MainModel::executeSimpleQuery("SELECT persona_id FROM PERSONAS WHERE persona_id = '$id'");
+    $checkCliente = MainModel::executeSimpleQuery("SELECT id_persona FROM PERSONAS WHERE id_persona = '$id'");
     if ($checkCliente->rowCount() <= 0) {
       $alerta = [
         "Alert" => "simple",
@@ -253,6 +253,24 @@ class PersonaController extends PersonaModel
       echo json_encode($alerta);
       exit();
     }
+    $eliminarPersona = PersonaModel::deletePersonaModel($id);
+
+    if ($eliminarPersona->rowCount() == 1) {
+      $alerta = [
+        "Alert" => "reload",
+        "title" => "Persona Eliminada",
+        "text" => "La persona ha sido eliminado exitosamente",
+        "icon" => "success"
+      ];
+    } else {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "No se pudo eliminar a la persona",
+        "icon" => "error"
+      ];
+    }
+    echo json_encode($alerta);
   }
 
   public function listarPuestos()
