@@ -130,6 +130,14 @@ class UsuarioController extends UsuarioModel
     }
     echo json_encode($alerta);
   }
+
+  public function listarUsuarios()
+  {
+    $sql = MainModel::executeSimpleQuery("SELECT * FROM USUARIOS");
+    $datos = $sql->fetchAll();
+    return $datos;
+  }
+
   public function listarRoles()
   {
     $sql = MainModel::executeSimpleQuery("SELECT * FROM ROLES");

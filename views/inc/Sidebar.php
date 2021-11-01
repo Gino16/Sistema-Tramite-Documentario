@@ -15,6 +15,9 @@
           <a class="nav-link" href="<?= SERVERURL ?>persona-list/">Personas</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="<?= SERVERURL ?>usuario-list/">Usuarios</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="#">Solicitudes</a>
         </li>
       </ul>
