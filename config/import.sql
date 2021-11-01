@@ -26,7 +26,7 @@ username varchar(255),
 password varchar(255),
 enabled int,
 reset_password_token varchar(255),
-dni_ruc varchar(11) not null,
+dni_ruc varchar(11) not null unique key,
 constraint fk_usuario_persona foreign key (dni_ruc) references PERSONAS(dni_ruc)
 )ENGINE = INNODB;
 
@@ -131,8 +131,8 @@ insert into PUESTOS(nombre) values ('Docente');
 
 insert into PERSONAS(correo, dni_ruc, nombre, apellido, puesto_id) values ('gino.francisco@hotmail.com', '73360326', 'Gino', 'Ascencio Gomez', 1);
 
-insert into ROLES (nombre) values ('ROLE_USER');
-insert into ROLES (nombre) values ('ROLE_ADMIN');
+insert into ROLES (nombre) values ('USUARIO');
+insert into ROLES (nombre) values ('ADMINISTRADOR');
 
 insert into ROL_SOLICITUDES(nombre) values ('Emisor');
 insert into ROL_SOLICITUDES(nombre) values ('Receptor');

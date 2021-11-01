@@ -17,6 +17,7 @@ class UsuarioController extends UsuarioModel
     $password2 = MainModel::cleanString($_POST['password2']);
     $dniRuc = MainModel::cleanString($_POST['dni_ruc']);
     $enabled = (isset($_POST['enabled'])) ? 1 : 0;
+    $rol = MainModel::cleanString($_POST['rol']);
 
     if ($username == "" || $password == "" || $password2 == "" || $dniRuc == "") {
       $alerta = [
@@ -62,6 +63,17 @@ class UsuarioController extends UsuarioModel
       echo json_encode($alerta);
       exit();
     }
+
+    if ($rol < 1) {
+      $alerta = [
+        "Alert" => "simple",
+        "title" => "Ocurrió un error inesperado",
+        "text" => "El ROL enviado no es correcto",
+        "icon" => "error"
+      ];
+      echo json_encode($alerta);
+      exit();
+    }
     if ($password != $password2) {
       $alerta = [
         "Alert" => "simple",
@@ -85,12 +97,29 @@ class UsuarioController extends UsuarioModel
     $usuarioAgregado = UsuarioModel::saveUsuarioModel($datosUsuario);
 
     if ($usuarioAgregado->rowCount() == 1) {
-      $alerta = [
-        "Alert" => "clean",
-        "title" => "Usuario registrado",
-        "text" => "El USUARIO fue registrado exitosamente en el sistema",
-        "icon" => "success"
+      $query = MainModel::executeSimpleQuery("SELECT * FROM USUARIOS WHERE dni_ruc = '$dniRuc'");
+      $usuario = $query->fetchAll();
+      $datosRolUsuario = [
+        'USUARIO_ID' => $usuario[0]['usuario_id'],
+        'ROL_ID' => $rol
       ];
+
+      $rolUsuarioAgregado = UsuarioModel::saveRolUsuarioModel($datosRolUsuario);
+      if ($rolUsuarioAgregado->rowCount() == 1) {
+        $alerta = [
+          "Alert" => "clean",
+          "title" => "Usuario registrado",
+          "text" => "El USUARIO fue registrado exitosamente en el sistema",
+          "icon" => "success"
+        ];
+      } else {
+        $alerta = [
+          "Alert" => "simple",
+          "title" => "Ocurrió un error inesperado",
+          "text" => "No se pudo registrar el usuario en el sistema",
+          "icon" => "error"
+        ];
+      }
     } else {
       $alerta = [
         "Alert" => "simple",
@@ -100,5 +129,11 @@ class UsuarioController extends UsuarioModel
       ];
     }
     echo json_encode($alerta);
+  }
+  public function listarRoles()
+  {
+    $sql = MainModel::executeSimpleQuery("SELECT * FROM ROLES");
+    $datos = $sql->fetchAll();
+    return $datos;
   }
 }

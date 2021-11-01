@@ -37,6 +37,20 @@
         </div>
 
         <div class="mb-3">
+
+          <label for="rol">Rol</label>
+          <select class="form-select" name="rol">
+            <?php
+            require_once './controllers/usuarioController.php';
+            $usuarioController = new UsuarioController();
+            $roles = $usuarioController->listarRoles();
+            foreach ($roles as $rol) : ?>
+              <option value="<?= $rol['rol_id']; ?>"><?= $rol['nombre'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <input class="btn btn-primary" type="submit" value="Registrar">
         </div>
       </form>
