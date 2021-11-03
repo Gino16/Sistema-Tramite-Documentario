@@ -131,6 +131,27 @@ class UsuarioController extends UsuarioModel
     echo json_encode($alerta);
   }
 
+  public function paginadorUsuarioController($page, $numReg, $role, $url, $search)
+  {
+    $page = MainModel::cleanString($page);
+    $numReg = MainModel::cleanString($numReg);
+    $role = MainModel::cleanString($role);
+    $url = MainModel::cleanString($url);
+    $url = SERVERURL . $url . '/';
+    $search = MainModel::cleanString($search);
+
+    $table = "";
+
+    $page = (isset($page) && $page > 0) ? (int)$page : 1;
+    $start = ($page > 0) ? (($page * $numReg) - $numReg) : 0;
+
+    if (isset($search) && $search != "") {
+      $query = "SELECT SQL_CALC_FOUND_ROWS u.usuario_id, u.username, u.password, p.apellido, p.nombre, r.nombre FROM usuarios u INNER JOIN personas p ON u.dni_ruc = p.dni_ruc INNER JOIN usuarios_roles ur ON ur.usuario_id = u.usuario_id INNER JOIN roles r ON ur.rol_id = r.rol_id WHERE u.username LIKE '%$search%' OR p.apellido LIKE '%$search%' OR p.nombre LIKE '%$search%' ORDER BY u.username ASC LIMIT $start, $numReg ";
+    } else {
+      $query = "SELECT SQL_CALC_FOUND_ROWS pe.*, pu.nombre as nombre_puesto FROM PERSONAS pe INNER JOIN PUESTOS pu ON pe.puesto_id = pu.puesto_id ORDER BY apellido ASC LIMIT $start, $numReg";
+    }
+  }
+
   public function listarUsuarios()
   {
     $sql = MainModel::executeSimpleQuery("SELECT * FROM USUARIOS");
