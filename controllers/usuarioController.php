@@ -146,10 +146,69 @@ class UsuarioController extends UsuarioModel
     $start = ($page > 0) ? (($page * $numReg) - $numReg) : 0;
 
     if (isset($search) && $search != "") {
-      $query = "SELECT SQL_CALC_FOUND_ROWS u.usuario_id, u.username, u.password, p.apellido, p.nombre, r.nombre FROM usuarios u INNER JOIN personas p ON u.dni_ruc = p.dni_ruc INNER JOIN usuarios_roles ur ON ur.usuario_id = u.usuario_id INNER JOIN roles r ON ur.rol_id = r.rol_id WHERE u.username LIKE '%$search%' OR p.apellido LIKE '%$search%' OR p.nombre LIKE '%$search%' ORDER BY u.username ASC LIMIT $start, $numReg ";
+      $query = "SELECT SQL_CALC_FOUND_ROWS u.usuario_id, u.username, u.password, CONCAT(p.apellido,', ',p.nombre) as nombre_usuario, r.nombre as rol FROM USUARIOS u INNER JOIN PERSONAS p ON u.dni_ruc = p.dni_ruc INNER JOIN USUARIOS_ROLES ur ON ur.usuario_id = u.usuario_id INNER JOIN ROLES r ON ur.rol_id = r.rol_id WHERE u.username LIKE '%$search%' OR p.apellido LIKE '%$search%' OR p.nombre LIKE '%$search%' ORDER BY u.username ASC LIMIT $start, $numReg ";
     } else {
-      $query = "SELECT SQL_CALC_FOUND_ROWS pe.*, pu.nombre as nombre_puesto FROM PERSONAS pe INNER JOIN PUESTOS pu ON pe.puesto_id = pu.puesto_id ORDER BY apellido ASC LIMIT $start, $numReg";
+      $query = "SELECT SQL_CALC_FOUND_ROWS u.usuario_id, u.username, u.password, CONCAT(p.apellido,', ',p.nombre) as nombre_usuario, r.nombre as rol FROM USUARIOS u INNER JOIN PERSONAS p ON u.dni_ruc = p.dni_ruc INNER JOIN USUARIOS_ROLES ur ON ur.usuario_id = u.usuario_id INNER JOIN ROLES r ON ur.rol_id = r.rol_id ORDER BY u.username ASC LIMIT $start, $numReg";
     }
+    $conn = MainModel::connect();
+    $data = $conn->query($query);
+    $data = $data->fetchAll();
+
+    $total = $conn->query("SELECT FOUND_ROWS()");
+    $total = (int)$total->fetchColumn();
+
+    $nPages = ceil($total / $numReg);
+
+    if ($total >= 1 && $page <= $nPages) {
+      $count = $start + 1;
+      $regStart = $start + 1;
+      foreach ($data as $row) {
+
+        $table .= '
+            <tr class="text-center">
+              <td> ' . $count++ . '</td>
+              <td>' . $row['username'] . ' </td >
+              <td > ' . $row['password'] . ' ' . $row['nombre'] . ' </td >
+              <td > ' . $row['nombre_usuario'] . ' </td >
+              <td > ' . $row['rol'] . ' </td >
+              <td> 
+                <a href="' . SERVERURL . 'usuario-update/' . MainModel::encryption($row['usuario_id']) . '" class="btn btn-success btn-sm"><i class="fas fa-pen"></i></a>
+                <form action="' . SERVERURL . 'ajax/usuarioAjax.php" method="post" class="d-inline FormularioAjax" data-form="delete" autocomplete="off">
+                  <input type="hidden" name="usuario_id_del" value="' . MainModel::encryption($row['usuario_id']) . '">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
+              </td>
+            </tr >
+				';
+      }
+      $regEnd = $count - 1;
+    } else {
+      if ($total >= 1) {
+        $table .= '
+        <tr class="text-center" >
+            <td i = "9" >
+                <a class="btn btn-primary btn-sm" href = "' . $url . '" > Haga click aquí para recargar la lista </a >
+            </td >
+        </tr >
+				';
+      } else {
+        $table .= '
+        <tr class="text-center" >
+            <td colspan = "9" > No existen datos en el sistema </td >
+        </tr >
+				';
+      }
+    }
+
+    $table .= '</tbody ></table ></div > ';
+
+    if ($total >= 1 && $page <= $nPages) {
+      $table .= '<p class="text-end" > Mostrando usuarios ' . $regStart . ' al ' . $regEnd . ' de un total de ' . $total . ' </p > ';
+      $table .= MainModel::tablePages($page, $nPages, $url, 10);
+    }
+    return $table;
   }
 
   public function listarUsuarios()

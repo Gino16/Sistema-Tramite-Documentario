@@ -16,7 +16,7 @@
   $viewController = new ViewsController();
 
   $views = $viewController->getViewsController();
-
+  include './views/inc/Script.php';
   if ($views == 'login' || $views == '404') {
     require_once './views/contents/' . $views . '-view.php';
   } else {
@@ -25,7 +25,7 @@
     include $views;
   }
 
-  include './views/inc/Script.php' ?>
+  ?>
 </body>
 
 </html>
